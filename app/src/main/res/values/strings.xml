@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name" translatable="false">ProgressArchiver95</string>
+    <string name="pb95_not_found">Progressbar95 not found...</string>
+    <string name="copy_base">Copy base.apk</string>
+    <string name="copy_dpis">Copy DPIs</string>
+    <string name="abis_found">The following ABIs were found on your device:</string>
+    <string name="abi_armeabi" translatable="false">ARMv7 (armeabi)</string>
+    <string name="abi_armv8" translatable="false">ARMv8</string>
+    <string name="abi_x86_64" translatable="false">x86_64</string>
+    <string name="abi_x86" translatable="false">x86</string>
+    <string name="dpis_found">The following DPIs were found on your device:</string>
+    <string name="nodpi" translatable="false">NODPI</string>
+    <string name="tvdpi" translatable="false">TVDPI</string>
+    <string name="xxxhdpi" translatable="false">XXXHDPI</string>
+    <string name="xxhdpi" translatable="false">XXHDPI</string>
+    <string name="xhdpi" translatable="false">XHDPI</string>
+    <string name="hdpi" translatable="false">HDPI</string>
+    <string name="mdpi" translatable="false">MDPI</string>
+    <string name="ldpi" translatable="false">LDPI</string>
+    <string name="yesdpi" translatable="false">YESDPI</string>
+    <string name="archive_button_text">ARCHIVE</string>
+    <string name="searching_label">Searching...</string>
+    <string name="files_found_at">Game files were found\n(click to see path)</string>
+    <string name="version_label">"Version "</string>
+    <string name="no_abis_found">No ABIs were found. Please try old archive mode.</string>
+    <string name="old_archive_mode">Old archive mode</string>
+</resources>

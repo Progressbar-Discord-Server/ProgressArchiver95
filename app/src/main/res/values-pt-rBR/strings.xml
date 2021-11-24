@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pb95_not_found">Progressbar95 não encontrado...</string>
+    <string name="copy_base">Copiar base.apk</string>
+    <string name="copy_dpis">Copiar DPIs</string>
+    <string name="abis_found">As seguintes ABIs foram encontradas em seu dispositivo:</string>
+    <string name="dpis_found">Os seguintes DPIs foram encontrados em seu dispositivo:</string>
+    <string name="archive_button_text">ARQUIVAR</string>
+    <string name="searching_label">Procurando...</string>
+    <string name="files_found_at">Arquivos do jogo encontrados\n(clique para ver caminho)</string>
+    <string name="version_label">"Versão "</string>
+    <string name="no_abis_found">Nenhuma ABI encontrada. Tente o modo de arquivação antigo.</string>
+    <string name="old_archive_mode">Modo de arquivação antigo</string>
+</resources>
