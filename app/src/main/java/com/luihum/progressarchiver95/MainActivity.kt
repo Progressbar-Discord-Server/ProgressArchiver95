@@ -15,7 +15,6 @@ import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.luihum.progressarchiver95.databinding.ActivityMainBinding
 import java.io.File
-import java.io.FileReader
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

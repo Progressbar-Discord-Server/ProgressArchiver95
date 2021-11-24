@@ -66,16 +66,16 @@
 
         <TextView
             android:id="@+id/foundAbiList"
-            android:layout_width="98dp"
-            android:layout_height="186dp"
+            android:layout_width="94dp"
+            android:layout_height="157dp"
             android:text="@string/abis_found"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.105"
+            app:layout_constraintHorizontal_bias="0.102"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/version_label"
-            app:layout_constraintVertical_bias="0.853" />
+            app:layout_constraintTop_toBottomOf="@+id/archive_button"
+            app:layout_constraintVertical_bias="0.614" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout
