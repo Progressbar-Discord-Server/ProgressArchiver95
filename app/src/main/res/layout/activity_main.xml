@@ -38,13 +38,13 @@
             android:layout_width="312dp"
             android:layout_height="50dp"
             android:text="@string/copy_base"
-            app:layout_constraintBottom_toTopOf="@+id/switch2"
+            app:layout_constraintBottom_toTopOf="@+id/copydpis"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/status_text" />
 
         <Switch
-            android:id="@+id/switch2"
+            android:id="@+id/copydpis"
             android:layout_width="312dp"
             android:layout_height="50dp"
             android:text="@string/copy_dpis"
@@ -61,8 +61,21 @@
             android:layout_marginBottom="30dp"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/archive_button"
-            app:layout_constraintEnd_toEndOf="@+id/switch2"
-            app:layout_constraintStart_toStartOf="@+id/switch2" />
+            app:layout_constraintEnd_toEndOf="@+id/copydpis"
+            app:layout_constraintStart_toStartOf="@+id/copydpis" />
+
+        <TextView
+            android:id="@+id/foundAbiList"
+            android:layout_width="98dp"
+            android:layout_height="186dp"
+            android:text="@string/abis_found"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.105"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/version_label"
+            app:layout_constraintVertical_bias="0.853" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout

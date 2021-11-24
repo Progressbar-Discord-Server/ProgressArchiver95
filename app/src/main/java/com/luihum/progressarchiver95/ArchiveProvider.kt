@@ -1,45 +1,42 @@
 package com.luihum.progressarchiver95
 
-import android.content.ContentValues
 import android.database.Cursor
-import android.net.Uri
+import android.os.CancellationSignal
+import android.os.ParcelFileDescriptor
+import android.provider.DocumentsContract.Root
+import android.provider.DocumentsProvider
 
-class ArchiveProvider : android.content.ContentProvider() {
+class ArchiveProvider : DocumentsProvider() {
+
+    private val defaultRootProjection: Array<String> = Array(5){
+        Root.COLUMN_ROOT_ID
+        Root.COLUMN_ICON
+        Root.COLUMN_TITLE
+        Root.COLUMN_FLAGS
+        Root.COLUMN_DOCUMENT_ID}
+
+
     override fun onCreate(): Boolean {
-        android.util.Log.d("ProgressArchiver95","ArchiveProvider has started")
-        return true
+        TODO("Not yet implemented")
     }
 
-    override fun query(
-        p0: Uri,
-        p1: Array<out String>?,
-        p2: String?,
-        p3: Array<out String>?,
-        p4: String?
-    ): Cursor? {
-        //TODO("Not yet implemented")
-        return null
+    override fun queryRoots(p0: Array<out String>?): Cursor {
+        TODO("Not yet implemented")
     }
 
-    override fun getType(p0: Uri): String? {
-        //TODO("Not yet implemented")
-        return null
+    override fun queryDocument(p0: String?, p1: Array<out String>?): Cursor {
+        TODO("Not yet implemented")
     }
 
-    override fun insert(p0: Uri, p1: ContentValues?): Uri? {
-        //TODO("Not yet implemented")
-        return null
+    override fun queryChildDocuments(p0: String?, p1: Array<out String>?, p2: String?): Cursor {
+        TODO("Not yet implemented")
     }
 
-    override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
-        //TODO("Not yet implemented")
-        return 0
+    override fun openDocument(
+        p0: String?,
+        p1: String?,
+        p2: CancellationSignal?,
+    ): ParcelFileDescriptor {
+        TODO("Not yet implemented")
     }
-
-    override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
-        //TODO("Not yet implemented")
-        return 0
-    }
-
-
 }
