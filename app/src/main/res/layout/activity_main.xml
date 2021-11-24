@@ -17,14 +17,14 @@
             android:layout_height="wrap_content"
             android:text="@string/searching_label"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@id/button_first"
+            app:layout_constraintBottom_toTopOf="@id/archive_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.19" />
 
         <Button
-            android:id="@+id/button_first"
+            android:id="@+id/archive_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/archive_button_text"
@@ -48,7 +48,7 @@
             android:layout_width="312dp"
             android:layout_height="50dp"
             android:text="@string/copy_dpis"
-            app:layout_constraintBottom_toTopOf="@+id/button_first"
+            app:layout_constraintBottom_toTopOf="@+id/archive_button"
             app:layout_constraintEnd_toEndOf="@+id/copybase"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="@+id/copybase"
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/button_first"
+            app:layout_constraintBottom_toTopOf="@+id/archive_button"
             app:layout_constraintEnd_toEndOf="@+id/switch2"
             app:layout_constraintStart_toStartOf="@+id/switch2" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,8 +23,11 @@ class MainActivity : AppCompatActivity() {
         context = this
         context.packageManager.also { pm = it }
         binding = ActivityMainBinding.inflate(layoutInflater)
+        val archiveDir = java.io.File(filesDir, "archive")
+        archiveDir.mkdir()
         val statusLabel = binding.statusText
         val versionLabel = binding.versionLabel
+        val archiveButton = binding.archiveButton
         setContentView(binding.root)
         val apkInfo: ApplicationInfo
         val apkInfoB: PackageInfo
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(view, apkPath, Snackbar.LENGTH_LONG).setAction("", null).show()
             }
             versionLabel.text = getString(R.string.version_label) + apkVer
+
         } catch (e: PackageManager.NameNotFoundException) {
             statusLabel.text = getString(R.string.pb95_not_found)
         }
