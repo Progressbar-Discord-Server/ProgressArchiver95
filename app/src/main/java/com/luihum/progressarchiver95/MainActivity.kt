@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         val statusLabel = binding.statusText
         val versionLabel = binding.versionLabel
         val archiveButton = binding.archiveButton
+        val abiList = binding.foundAbiList
         val apkInfo: ApplicationInfo
         val apkInfoB: PackageInfo
         val apkPath: String
@@ -56,6 +57,19 @@ class MainActivity : AppCompatActivity() {
             val apks: Sequence<File> = apkPathHandle.walk().maxDepth(1).filter { f: File ->
                 f.absolutePath.endsWith(".apk")
             }
+            apks.forEach { a ->
+                val apkName = a.nameWithoutExtension.removePrefix("split_config.")
+                if (apkName in knownABIs) {
+                    Log.d("ProgressArchiver95", "ABI found: $apkName")
+                    val newAbiText = abiList.text + when (apkName) {
+                        "armeabi_v7a" -> getString(R.string.armeabi_v7a)
+                        "arm64_v8a" -> getString(R.string.arm64_v8a)
+                        "x86" -> getString(R.string.x86)
+                        "x86_64" -> getString(R.string.x86_64)
+                        else -> getString(R.string.unknown)
+                    }
+                }
+            }
             archiveButton.setOnClickListener {
                 val chosenApks: Sequence<File> = apks
                     .filter { f: File -> !(f.name == "base.apk" && !copyBase) }
@@ -74,6 +88,8 @@ class MainActivity : AppCompatActivity() {
         } catch (e: PackageManager.NameNotFoundException) {
             statusLabel.text = getString(R.string.pb95_not_found)
             archiveButton.isVisible = false
+            binding.copydpis.isVisible = false
+            binding.copybase.isVisible = false
         }
     }
 
@@ -94,6 +110,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun oldArchive(context: Context): Boolean {
         Toast.makeText(context,getString(R.string.old_archive_mode_started),Toast.LENGTH_SHORT).show()
+
         return true
     }
 

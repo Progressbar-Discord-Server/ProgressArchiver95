@@ -4,7 +4,6 @@
     package="com.luihum.progressarchiver95">
 
     <uses-sdk
-        android:minSdkVersion="21"
         android:targetSdkVersion="30"
         tools:ignore="GradleOverrides" />
     <application
