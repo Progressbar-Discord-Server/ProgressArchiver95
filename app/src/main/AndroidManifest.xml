@@ -8,9 +8,9 @@
         tools:ignore="GradleOverrides" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/samcool939_s2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/samcool939_s2"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProgressArchiver95">
         <provider
