@@ -157,7 +157,7 @@ class ArchiveProvider : DocumentsProvider() {
             row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, mimeType)
             row.add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, file.lastModified())
             row.add(DocumentsContract.Document.COLUMN_FLAGS, flags)
-            row.add(DocumentsContract.Document.COLUMN_ICON, R.drawable.ic_launcher_foreground)
+            row.add(DocumentsContract.Document.COLUMN_ICON, R.drawable.ic_launcher)
         }
 
     }
