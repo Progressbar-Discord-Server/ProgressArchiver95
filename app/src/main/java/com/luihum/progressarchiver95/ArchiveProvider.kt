@@ -38,6 +38,7 @@ class ArchiveProvider : DocumentsProvider() {
 
 
     override fun onCreate(): Boolean {
+        Log.d("ProgressArchiver95", "ArchiveProvider path:" + baseDir.absolutePath)
         //TODO("Not yet implemented")
         return true
     }
@@ -55,22 +56,19 @@ class ArchiveProvider : DocumentsProvider() {
             add(Root.COLUMN_ROOT_ID, "progressarchiver95")
             add(Root.COLUMN_FLAGS, Root.FLAG_SUPPORTS_SEARCH)
             add(Root.COLUMN_TITLE, "ProgressArchiver95")
-
-            // This document id cannot change after it's shared.
             add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(baseDir))
-
-            // The child MIME types are used to filter the roots and only present to the
-            // user those roots that contain the desired type somewhere in their file hierarchy.
             add(Root.COLUMN_AVAILABLE_BYTES, baseDir.freeSpace)
             add(Root.COLUMN_ICON, R.drawable.ic_launcher_foreground)
         }
+        Log.d("ProgressArchiver95", "ArchiveProvider cursor:$result")
+
 
         return result
 
     }
 
     private fun resolveRootProjection(projection: Array<out String>?): Array<out String>? {
-        return projection
+        return projection ?: DEFAULT_ROOT_PROJECTION
     }
 
 
