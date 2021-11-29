@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.luihum.progressarchiver95.databinding.ActivityMainBinding
@@ -122,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_old_archive -> oldArchive(context)
+            R.id.action_about -> about(context)
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -130,5 +132,12 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-
+    private fun about(context: Context): Boolean {
+        AlertDialog.Builder(context)
+            .setTitle(R.string.about)
+            .setMessage(R.string.about_content)
+            .setNeutralButton(R.string.ok, null)
+            .show()
+        return true
+    }
 }

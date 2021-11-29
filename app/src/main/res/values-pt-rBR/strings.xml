@@ -10,4 +10,5 @@
     <string name="no_abis_found">Nenhuma ABI encontrada. Tente o modo de arquivação antigo.</string>
     <string name="old_archive_mode">Modo de arquivação antigo</string>
     <string name="old_archive_mode_started">Modo de arquivação antigo iniciado</string>
+    <string name="about">Sobre</string>
 </resources>

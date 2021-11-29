@@ -26,4 +26,7 @@
     <string name="old_archive_mode">Old archive mode</string>
     <string name="old_archive_mode_started">Old archive mode started</string>
     <string name="unknown" translatable="false">Unknown</string>
+    <string name="about">About</string>
+    <string name="about_content" translatable="false">ProgressArchiver95 v0.4.0 BETA\n\nCredits:\n    Original Creator: Luihum#1287\n    Logo: (nobody yet)\n    Testing: Lol Guy (Android 10)\n    Special Thanks: Christian230102\n\nHow to use:\nSimply select the APKs you want to archive and click the Archive button.\nA list of ABIs and DPIs that were found on your device is available.\nYour archived versions are stored internally and made available through the standard SAF interface, so anything that uses SAF will support ProgressArchiver95.\nSAF (Storage Access Framework) is used in many apps to select files, such as Discord,\nChrome, Termux, Firefox, and the built-in Files app. If you don\'t see it, the apps are debuggable, so you can use ADB to extract the files from internal storage. Contact me (Luihum#1287) for instructions on this. \nOld archive mode only extracts the base.apk, ignoring ABIs. This is intended for versions before 0.50 before the split APK scheme.</string>
+    <string name="ok" translatable="false">OK</string>
 </resources>
