@@ -5,72 +5,94 @@ import android.database.MatrixCursor
 import android.os.CancellationSignal
 import android.os.ParcelFileDescriptor
 import android.provider.DocumentsContract
+import android.provider.DocumentsContract.Document.FLAG_SUPPORTS_DELETE
 import android.provider.DocumentsContract.Root
 import android.provider.DocumentsProvider
+import android.util.Log
+import android.webkit.MimeTypeMap
 import java.io.File
 import java.io.FileNotFoundException
-import android.webkit.MimeTypeMap
 import java.util.*
 
 class ArchiveProvider : DocumentsProvider() {
-
-    private val baseDir = context?.getDir(context?.filesDir?.absolutePath + "archive", 0)
-    private val defaultRootProjection: Array<String> = Array(8){
-        Root.COLUMN_ROOT_ID
-        Root.COLUMN_MIME_TYPES
-        Root.COLUMN_FLAGS
-        Root.COLUMN_ICON
-        Root.COLUMN_TITLE
-        Root.COLUMN_SUMMARY
-        Root.COLUMN_DOCUMENT_ID
+    private val baseDir = Constants().ARCHIVE_BASE_DIR
+    private val DEFAULT_ROOT_PROJECTION: Array<String> = arrayOf(
+        Root.COLUMN_ROOT_ID,
+        Root.COLUMN_MIME_TYPES,
+        Root.COLUMN_FLAGS,
+        Root.COLUMN_ICON,
+        Root.COLUMN_TITLE,
+        Root.COLUMN_SUMMARY,
+        Root.COLUMN_DOCUMENT_ID,
         Root.COLUMN_AVAILABLE_BYTES
-    }
-    private val defaultDocumentProjection: Array<String> = Array(6)
-    {
-            DocumentsContract.Document.COLUMN_DOCUMENT_ID
-            DocumentsContract.Document.COLUMN_MIME_TYPE
-            DocumentsContract.Document.COLUMN_DISPLAY_NAME
-            DocumentsContract.Document.COLUMN_LAST_MODIFIED
-            DocumentsContract.Document.COLUMN_FLAGS
-            DocumentsContract.Document.COLUMN_SIZE
-        }
+    )
+
+    private val DEFAULT_DOCUMENT_PROJECTION: Array<String> = arrayOf(
+        DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+        DocumentsContract.Document.COLUMN_MIME_TYPE,
+        DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+        DocumentsContract.Document.COLUMN_LAST_MODIFIED,
+        DocumentsContract.Document.COLUMN_FLAGS,
+        DocumentsContract.Document.COLUMN_SIZE
+    )
+
 
     override fun onCreate(): Boolean {
         //TODO("Not yet implemented")
         return true
     }
 
-    override fun queryRoots(p0: Array<out String>?): Cursor {
-        val result = MatrixCursor(p0 ?: defaultRootProjection)
-        val applicationName = "ProgressArchiver95"
-        val row = result.newRow()
-        row.add(Root.COLUMN_ROOT_ID, "pb95archive")
-        row.add(Root.COLUMN_DOCUMENT_ID, "pb95archive")
-        row.add(Root.COLUMN_TITLE, "ProgressArchiver95")
-        row.add(Root.COLUMN_MIME_TYPES, "*/*")
-        row.add(Root.COLUMN_AVAILABLE_BYTES, baseDir?.freeSpace)
-        row.add(Root.COLUMN_ICON, R.mipmap.ic_launcher)
+    override fun queryRoots(projection: Array<out String>?): Cursor {
+        // Use a MatrixCursor to build a cursor
+        // with either the requested fields, or the default
+        // projection if "projection" is null.
+        val result = MatrixCursor(resolveRootProjection(projection))
+
+
+        // It's possible to have multiple roots (e.g. for multiple accounts in the
+        // same app) -- just add multiple cursor rows.
+        result.newRow().apply {
+            add(Root.COLUMN_ROOT_ID, "progressarchiver95")
+            add(Root.COLUMN_FLAGS, Root.FLAG_SUPPORTS_SEARCH)
+            add(Root.COLUMN_TITLE, "ProgressArchiver95")
+
+            // This document id cannot change after it's shared.
+            add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(baseDir))
+
+            // The child MIME types are used to filter the roots and only present to the
+            // user those roots that contain the desired type somewhere in their file hierarchy.
+            add(Root.COLUMN_AVAILABLE_BYTES, baseDir.freeSpace)
+            add(Root.COLUMN_ICON, R.drawable.ic_launcher_foreground)
+        }
+
         return result
+
     }
+
+    private fun resolveRootProjection(projection: Array<out String>?): Array<out String>? {
+        return projection
+    }
+
 
     override fun queryDocument(p0: String?, p1: Array<out String>?): Cursor? {
         //TODO("Not yet implemented")
         return null
     }
 
-    @Throws(FileNotFoundException::class)
     override fun queryChildDocuments(
-        parentDocumentId: String?,
-        projection: Array<String?>?,
-        sortOrder: String?,
+        parentDocumentId: String,
+        projection: Array<out String>?,
+        sortOrder: String?
     ): Cursor {
-        val result = MatrixCursor(projection ?: defaultDocumentProjection)
-        val parent = getFileForDocId(parentDocumentId!!)
-        for (file in parent?.listFiles()) {
-            includeFile(result, null, file)
+        return MatrixCursor(projection).apply {
+            val parent: File = getFileForDocId(parentDocumentId)
+            parent.listFiles()
+                .forEach { file ->
+                    includeFile(this, null, file)
+                }
         }
-        return result
     }
+
 
     override fun openDocument(
         p0: String?,
@@ -81,6 +103,7 @@ class ArchiveProvider : DocumentsProvider() {
         return null
 
     }
+
     private fun getDocIdForFile(file: File): String? {
         return file.absolutePath
     }
@@ -90,6 +113,7 @@ class ArchiveProvider : DocumentsProvider() {
         val file = getFileForDocId(documentId!!)
         return getMimeType(file)
     }
+
     private fun getMimeType(file: File): String {
         return if (file.isDirectory) {
             DocumentsContract.Document.MIME_TYPE_DIR
@@ -104,12 +128,14 @@ class ArchiveProvider : DocumentsProvider() {
             "application/octet-stream"
         }
     }
+
     @Throws(FileNotFoundException::class)
     private fun getFileForDocId(docId: String): File {
         val f = File(docId)
         if (!f.exists()) throw FileNotFoundException(f.absolutePath + " not found")
         return f
     }
+
     @Throws(FileNotFoundException::class)
     private fun includeFile(result: MatrixCursor, docId: String?, file: File?) {
         var docId = docId
@@ -121,22 +147,20 @@ class ArchiveProvider : DocumentsProvider() {
         }
         var flags = 0
         if (file.isDirectory) {
-            if (file.canWrite()) flags = flags or DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE
-        } else if (file.canWrite()) {
-            flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_WRITE
+            flags = flags or FLAG_SUPPORTS_DELETE
+            val displayName = file.name
+            val mimeType = getMimeType(file)
+            if (mimeType.startsWith("image/")) flags =
+                flags or DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL
+            val row = result.newRow()
+            row.add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docId)
+            row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, displayName)
+            row.add(DocumentsContract.Document.COLUMN_SIZE, file.length())
+            row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, mimeType)
+            row.add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, file.lastModified())
+            row.add(DocumentsContract.Document.COLUMN_FLAGS, flags)
+            row.add(DocumentsContract.Document.COLUMN_ICON, R.drawable.ic_launcher_foreground)
         }
-        if (file.parentFile.canWrite()) flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_DELETE
-        val displayName = file.name
-        val mimeType = getMimeType(file)
-        if (mimeType.startsWith("image/")) flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL
-        val row = result.newRow()
-        row.add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docId)
-        row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, displayName)
-        row.add(DocumentsContract.Document.COLUMN_SIZE, file.length())
-        row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, mimeType)
-        row.add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, file.lastModified())
-        row.add(DocumentsContract.Document.COLUMN_FLAGS, flags)
-        row.add(DocumentsContract.Document.COLUMN_ICON, R.mipmap.ic_launcher)
-    }
 
+    }
 }

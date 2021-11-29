@@ -76,6 +76,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/archive_button"
             app:layout_constraintVertical_bias="0.614" />
+
+        <TextView
+            android:id="@+id/foundDpiList"
+            android:layout_width="94dp"
+            android:layout_height="157dp"
+            android:text="@string/dpis_found"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.743"
+            app:layout_constraintStart_toEndOf="@+id/foundAbiList"
+            app:layout_constraintTop_toBottomOf="@+id/archive_button"
+            app:layout_constraintVertical_bias="0.616" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout

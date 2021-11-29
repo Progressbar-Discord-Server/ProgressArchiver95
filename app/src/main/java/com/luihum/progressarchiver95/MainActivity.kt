@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         val versionLabel = binding.versionLabel
         val archiveButton = binding.archiveButton
         val abiList = binding.foundAbiList
+        val dpiList = binding.foundDpiList
         val apkInfo: ApplicationInfo
         val apkInfoB: PackageInfo
         val apkPath: String
@@ -59,15 +60,31 @@ class MainActivity : AppCompatActivity() {
             }
             apks.forEach { a ->
                 val apkName = a.nameWithoutExtension.removePrefix("split_config.")
-                if (apkName in knownABIs) {
+                if (apkName == "armeabi_v7a" || apkName == "arm64_v8a" || apkName == "x86_64" || apkName == "x86" ) {
                     Log.d("ProgressArchiver95", "ABI found: $apkName")
-                    val newAbiText = abiList.text + when (apkName) {
+                    val abiFound: String = (when (apkName) {
                         "armeabi_v7a" -> getString(R.string.armeabi_v7a)
                         "arm64_v8a" -> getString(R.string.arm64_v8a)
                         "x86" -> getString(R.string.x86)
                         "x86_64" -> getString(R.string.x86_64)
                         else -> getString(R.string.unknown)
-                    }
+                    })
+                    abiList.text = abiList.text.toString() + abiFound
+                }
+                if (apkName.endsWith("dpi")) {
+                    Log.d("ProgressArchiver95", "DPI found: $apkName")
+                    val dpiFound: String = (when (apkName) {
+                        "nodpi" -> getString(R.string.nodpi)
+                        "tvdpi" -> getString(R.string.tvdpi)
+                        "ldpi" -> getString(R.string.ldpi)
+                        "mdpi" -> getString(R.string.mdpi)
+                        "hdpi" -> getString(R.string.hdpi)
+                        "xhdpi" -> getString(R.string.xhdpi)
+                        "xxhdpi" -> getString(R.string.xxhdpi)
+                        "xxxhdpi" -> getString(R.string.xxxhdpi)
+                        else -> getString(R.string.unknown)
+                    })
+                    dpiList.text = dpiList.text.toString() + dpiFound
                 }
             }
             archiveButton.setOnClickListener {
