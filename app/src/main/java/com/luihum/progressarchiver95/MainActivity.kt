@@ -59,15 +59,15 @@ class MainActivity : AppCompatActivity() {
             }
             apks.forEach { a ->
                 val apkName = a.nameWithoutExtension.removePrefix("split_config.")
-                if (apkName in knownABIs) {
+                if (apkName in Constants().knownABIs) {
                     Log.d("ProgressArchiver95", "ABI found: $apkName")
-                    val newAbiText = abiList.text + when (apkName) {
+                    val newAbiText = when (apkName) {
                         "armeabi_v7a" -> getString(R.string.armeabi_v7a)
                         "arm64_v8a" -> getString(R.string.arm64_v8a)
                         "x86" -> getString(R.string.x86)
                         "x86_64" -> getString(R.string.x86_64)
                         else -> getString(R.string.unknown)
-                    }
+                    } + abiList.text
                 }
             }
             archiveButton.setOnClickListener {
