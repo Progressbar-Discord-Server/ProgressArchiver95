@@ -58,7 +58,7 @@ class ArchiveProvider : DocumentsProvider() {
             add(Root.COLUMN_TITLE, "ProgressArchiver95")
             add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(baseDir))
             add(Root.COLUMN_AVAILABLE_BYTES, baseDir.freeSpace)
-            add(Root.COLUMN_ICON, R.drawable.ic_launcher_foreground)
+            add(Root.COLUMN_ICON, R.drawable.ic_launcher)
         }
         Log.d("ProgressArchiver95", "ArchiveProvider cursor:$result")
 
