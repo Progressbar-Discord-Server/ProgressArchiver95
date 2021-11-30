@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_content">(PLACEHOLDER)</string>
+    <string name="about">(PLACEHOLDER)</string>
+    <string name="unknown">(PLACEHOLDER)</string>
+    <string name="old_archive_mode_started">(PLACEHOLDER)</string>
+    <string name="old_archive_mode">(PLACEHOLDER)</string>
+    <string name="version_label">(PLACEHOLDER)</string>
+    <string name="no_abis_found">(PLACEHOLDER)</string>
+    <string name="files_found_at">(PLACEHOLDER)</string>
+    <string name="searching_label">(PLACEHOLDER)</string>
+    <string name="archive_button_text">(PLACEHOLDER)</string>
+    <string name="copy_dpis">(PLACEHOLDER)</string>
+    <string name="copy_base">(PLACEHOLDER)</string>
+    <string name="pb95_not_found">(PLACEHOLDER)</string>
+</resources>
