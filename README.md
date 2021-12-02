@@ -48,7 +48,7 @@ First, make sure you have ADB installed on your computer. If you don't, you can 
 5. Type `adb exec-out run-as com.luihum.progressarchiver95 tar c files/archive/(version) > (version).tar`. This will generate a tar file with the version's files in your current directory.
 6. Open the file (using 7zip or your favorite tar viewer). Extract the files.
 
-## Credits   
+## Credits
     Original Creator: Luihum#1287
     Logo: SamCool939
     Testing: Lol Guy (Android 10)
