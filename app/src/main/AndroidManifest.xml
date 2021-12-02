@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.luihum.progressarchiver95">
-
+    <queries>
+        <package android:name="com.spookyhousestudios.progressbar95"/>
+    </queries>
     <uses-sdk
         android:targetSdkVersion="30"
         tools:ignore="GradleOverrides" />
