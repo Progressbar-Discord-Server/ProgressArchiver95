@@ -39,11 +39,13 @@ class MainActivity : AppCompatActivity() {
         val apkPath: String
         val apkPathHandle: File
         val apkVer: String
-        val copyBase: Boolean = binding.copybase.isChecked
-        val copyDpis: Boolean = binding.copydpis.isChecked
+        var copyBase = binding.copybase.isChecked
+        var copyDpis = binding.copydpis.isChecked
         archiveDir.mkdir()
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        binding.copydpis.setOnClickListener { copyDpis = binding.copydpis.isChecked }
+        binding.copybase.setOnClickListener { copyBase = binding.copybase.isChecked }
         try {
             apkInfo = pm.getApplicationInfo("com.spookyhousestudios.progressbar95", 0)
             apkInfoB = pm.getPackageInfo("com.spookyhousestudios.progressbar95", 0)
@@ -88,16 +90,32 @@ class MainActivity : AppCompatActivity() {
                     dpiList.text = dpiList.text.toString() + dpiFound
                 }
             }
+
             archiveButton.setOnClickListener {
-                val chosenApks: Sequence<File> = apks
-                    .filter { f: File -> !(f.name == "base.apk" && !copyBase) }
-                    .filter { f: File -> !(f.name.endsWith("dpi.apk") && !copyDpis) }
+                //BUG: This doesn't show for some reason
                 Toast.makeText(context, "Started to archive $apkVer", Toast.LENGTH_SHORT).show()
+                val abis = apks.filter { f: File ->
+                    f.nameWithoutExtension.endsWith("armeabi_v7a") ||
+                    f.nameWithoutExtension.endsWith("arm64_v8a")   ||
+                    f.nameWithoutExtension.endsWith("x86")         ||
+                    f.nameWithoutExtension.endsWith("x86_64")
+                }
+                val dpis = apks.filter { f: File -> f.nameWithoutExtension.endsWith("dpi")}
+                val base = apks.filter { f: File -> f.name.equals("base.apk") }
+                Log.d("ProgressArchiver95", "ABIs: $abis")
+                Log.d("ProgressArchiver95", "DPIs: $dpis")
+                Log.d("ProgressArchiver95", "Base: $base")
+                var chosenApks: Sequence<File> = abis
+                if (copyDpis) chosenApks += dpis
+                if (copyBase) chosenApks += base
                 chosenApks.forEach { a ->
                     Log.d("ProgressArchiver95", "Found APK: " + a.absolutePath.toString())
                     val archiveVerDir = File(archiveDir, apkVer)
                     archiveVerDir.mkdir()
-                    a.copyTo(archiveVerDir, true)
+                    val target = File(archiveVerDir, a.name)
+                    target.createNewFile()
+
+                    a.copyTo(target, true)
                     Log.d("ProgressArchiver95", "Archived ${a.name} successfully")
                 }
                 Toast.makeText(context, "Archived $apkVer successfully", Toast.LENGTH_SHORT).show()
@@ -108,6 +126,8 @@ class MainActivity : AppCompatActivity() {
             archiveButton.isVisible = false
             binding.copydpis.isVisible = false
             binding.copybase.isVisible = false
+            abiList.isVisible = false
+            dpiList.isVisible = false
         }
     }
 
@@ -132,6 +152,7 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
+
     private fun about(context: Context): Boolean {
         AlertDialog.Builder(context)
             .setTitle(R.string.about)

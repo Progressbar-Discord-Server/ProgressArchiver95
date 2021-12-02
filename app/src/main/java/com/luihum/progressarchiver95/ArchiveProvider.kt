@@ -15,7 +15,6 @@ import java.io.FileNotFoundException
 import java.util.*
 
 class ArchiveProvider : DocumentsProvider() {
-    private val baseDir = Constants().ARCHIVE_BASE_DIR
     private val DEFAULT_ROOT_PROJECTION: Array<String> = arrayOf(
         Root.COLUMN_ROOT_ID,
         Root.COLUMN_MIME_TYPES,
@@ -36,10 +35,8 @@ class ArchiveProvider : DocumentsProvider() {
         DocumentsContract.Document.COLUMN_SIZE
     )
 
-
     override fun onCreate(): Boolean {
-        Log.d("ProgressArchiver95", "ArchiveProvider path:" + baseDir.absolutePath)
-        //TODO("Not yet implemented")
+        Log.d("ProgressArchiver95", "ArchiveProvider path:" + ARCHIVE_BASE_DIR.absolutePath)
         return true
     }
 
@@ -56,8 +53,8 @@ class ArchiveProvider : DocumentsProvider() {
             add(Root.COLUMN_ROOT_ID, "progressarchiver95")
             add(Root.COLUMN_FLAGS, Root.FLAG_SUPPORTS_SEARCH)
             add(Root.COLUMN_TITLE, "ProgressArchiver95")
-            add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(baseDir))
-            add(Root.COLUMN_AVAILABLE_BYTES, baseDir.freeSpace)
+            add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(ARCHIVE_BASE_DIR))
+            add(Root.COLUMN_AVAILABLE_BYTES, ARCHIVE_BASE_DIR.freeSpace)
             add(Root.COLUMN_ICON, R.drawable.ic_launcher)
         }
         Log.d("ProgressArchiver95", "ArchiveProvider cursor:$result")
@@ -67,46 +64,54 @@ class ArchiveProvider : DocumentsProvider() {
 
     }
 
-    private fun resolveRootProjection(projection: Array<out String>?): Array<out String>? {
+    private fun resolveRootProjection(projection: Array<out String>?): Array<out String> {
         return projection ?: DEFAULT_ROOT_PROJECTION
     }
 
-
-    override fun queryDocument(p0: String?, p1: Array<out String>?): Cursor? {
-        //TODO("Not yet implemented")
-        return null
+    override fun queryDocument(p0: String?, p1: Array<out String>?): Cursor {
+        val result =
+            MatrixCursor(p1 ?: DEFAULT_DOCUMENT_PROJECTION)
+        includeFile(result, p0, null)
+        return result
     }
 
-    override fun queryChildDocuments(
-        parentDocumentId: String,
-        projection: Array<out String>?,
-        sortOrder: String?
-    ): Cursor {
-        return MatrixCursor(projection).apply {
+    override fun queryChildDocuments(parentDocumentId: String, projection: Array<out String>?, sortOrder: String?): Cursor {
+        return MatrixCursor(projection ?: DEFAULT_DOCUMENT_PROJECTION).apply {
             val parent: File = getFileForDocId(parentDocumentId)
             parent.listFiles()
                 .forEach { file ->
-                    includeFile(this, null, file)
+                    includeFile(this, file.absolutePath, file)
                 }
         }
     }
 
-
-    override fun openDocument(
-        p0: String?,
-        p1: String?,
-        p2: CancellationSignal?,
-    ): ParcelFileDescriptor? {
-        //TODO("Not yet implemented")
-        return null
-
+    override fun isChildDocument(parentDocumentId: String?, documentId: String): Boolean {
+        return documentId.startsWith(parentDocumentId!!)
     }
 
-    private fun getDocIdForFile(file: File): String? {
+    override fun deleteDocument(documentId: String?) {
+        val file = getFileForDocId(documentId!!)
+        if (!file.delete()) {
+            throw FileNotFoundException("Failed to delete document with id $documentId")
+        }
+    }
+
+    override fun openDocument(documentId: String?, mode: String?, signal: CancellationSignal?): ParcelFileDescriptor? {
+        val file = getFileForDocId(documentId!!)
+        val accessMode = ParcelFileDescriptor.parseMode(mode)
+        return ParcelFileDescriptor.open(file, accessMode)
+    }
+
+    private fun getDocIdForFile(file: File): String {
         return file.absolutePath
     }
 
-    @Throws(FileNotFoundException::class)
+    private fun getFileForDocId(docId: String): File {
+        val f = File(docId)
+        if (!f.exists()) throw FileNotFoundException(f.absolutePath + " not found")
+        return f
+    }
+
     override fun getDocumentType(documentId: String?): String {
         val file = getFileForDocId(documentId!!)
         return getMimeType(file)
@@ -127,14 +132,6 @@ class ArchiveProvider : DocumentsProvider() {
         }
     }
 
-    @Throws(FileNotFoundException::class)
-    private fun getFileForDocId(docId: String): File {
-        val f = File(docId)
-        if (!f.exists()) throw FileNotFoundException(f.absolutePath + " not found")
-        return f
-    }
-
-    @Throws(FileNotFoundException::class)
     private fun includeFile(result: MatrixCursor, docId: String?, file: File?) {
         var docId = docId
         var file = file
@@ -159,6 +156,7 @@ class ArchiveProvider : DocumentsProvider() {
             row.add(DocumentsContract.Document.COLUMN_FLAGS, flags)
             row.add(DocumentsContract.Document.COLUMN_ICON, R.drawable.ic_launcher)
         }
+        Log.d("ProgressArchiver95", "ArchiveProvider: Included ${file.absolutePath}")
 
     }
 }
