@@ -55,3 +55,4 @@ First, make sure you have ADB installed on your computer. If you don't, you can 
     Special Thanks: Christian230102
     Translators:
       Portuguese (Brazil) - Luihum
+      Indonesian - SamCool939
