@@ -20,9 +20,10 @@
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.19" />
+            app:layout_constraintVertical_bias="0.198" />
 
         <Button
             android:id="@+id/archive_button"
@@ -32,7 +33,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/status_text" />
+            app:layout_constraintTop_toBottomOf="@+id/status_text"
+            app:layout_constraintVertical_bias="0.49" />
 
         <Switch
             android:id="@+id/copybase"
@@ -41,55 +43,85 @@
             android:text="@string/copy_base"
             app:layout_constraintBottom_toTopOf="@+id/copydpis"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.505"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/status_text" />
+            app:layout_constraintTop_toBottomOf="@+id/status_text"
+            app:layout_constraintVertical_bias="0.41000003"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Switch
+            android:id="@+id/copylang"
+            android:layout_width="312dp"
+            android:layout_height="50dp"
+            android:text="@string/copy_lang"
+            app:layout_constraintBottom_toTopOf="@+id/archive_button"
+            app:layout_constraintEnd_toEndOf="@+id/copydpis"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/copydpis"
+            app:layout_constraintTop_toBottomOf="@+id/copydpis" />
 
         <Switch
             android:id="@+id/copydpis"
             android:layout_width="312dp"
             android:layout_height="50dp"
             android:text="@string/copy_dpis"
-            app:layout_constraintBottom_toTopOf="@+id/archive_button"
+            app:layout_constraintBottom_toTopOf="@+id/copylang"
             app:layout_constraintEnd_toEndOf="@+id/copybase"
-            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/copybase"
-            app:layout_constraintTop_toBottomOf="@+id/status_text" />
+            app:layout_constraintTop_toBottomOf="@+id/copybase" />
 
         <TextView
             android:id="@+id/version_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/archive_button"
-            app:layout_constraintEnd_toEndOf="@+id/copydpis"
-            app:layout_constraintStart_toStartOf="@+id/copydpis" />
+            app:layout_constraintBottom_toTopOf="@+id/foundLangList"
+            app:layout_constraintEnd_toEndOf="@+id/copylang"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="@+id/copylang"
+            app:layout_constraintTop_toBottomOf="@+id/archive_button"
+            app:layout_constraintVertical_bias="0.52" />
+
+        <TextView
+            android:id="@+id/foundLangList"
+            android:layout_width="94dp"
+            android:layout_height="157dp"
+            android:text="@string/langs_found"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/foundDpiList"
+            app:layout_constraintEnd_toStartOf="@+id/foundDpiList"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toEndOf="@+id/foundAbiList"
+            app:layout_constraintTop_toTopOf="@+id/foundDpiList"
+            app:layout_constraintVertical_bias="0.083" />
 
         <TextView
             android:id="@+id/foundAbiList"
             android:layout_width="94dp"
-            android:layout_height="157dp"
+            android:layout_height="130dp"
             android:text="@string/abis_found"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/foundDpiList"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.102"
+            app:layout_constraintHorizontal_bias="0.141"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/archive_button"
-            app:layout_constraintVertical_bias="0.614" />
+            app:layout_constraintTop_toTopOf="@+id/foundDpiList"
+            app:layout_constraintVertical_bias="0.648" />
 
         <TextView
             android:id="@+id/foundDpiList"
             android:layout_width="94dp"
-            android:layout_height="157dp"
+            android:layout_height="130dp"
             android:text="@string/dpis_found"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.743"
+            app:layout_constraintHorizontal_bias="0.781"
             app:layout_constraintStart_toEndOf="@+id/foundAbiList"
             app:layout_constraintTop_toBottomOf="@+id/archive_button"
-            app:layout_constraintVertical_bias="0.616" />
+            app:layout_constraintVertical_bias="0.685" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout

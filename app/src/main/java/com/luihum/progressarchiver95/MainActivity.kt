@@ -28,12 +28,13 @@ class MainActivity : AppCompatActivity() {
         context = this
         context.packageManager.also { pm = it }
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val archiveDir = File(filesDir, "archive")
+        val archiveDir = File(getExternalFilesDir(null)/*filesDir*/, "archive")
         val statusLabel = binding.statusText
         val versionLabel = binding.versionLabel
         val archiveButton = binding.archiveButton
         val abiList = binding.foundAbiList
         val dpiList = binding.foundDpiList
+        val langList = binding.foundLangList
         val apkInfo: ApplicationInfo
         val apkInfoB: PackageInfo
         val apkPath: String
@@ -41,11 +42,13 @@ class MainActivity : AppCompatActivity() {
         val apkVer: String
         var copyBase = binding.copybase.isChecked
         var copyDpis = binding.copydpis.isChecked
+        var copyLang = binding.copylang.isChecked
         archiveDir.mkdir()
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         binding.copydpis.setOnClickListener { copyDpis = binding.copydpis.isChecked }
         binding.copybase.setOnClickListener { copyBase = binding.copybase.isChecked }
+        binding.copylang.setOnClickListener { copyLang = binding.copylang.isChecked }
         try {
             apkInfo = pm.getApplicationInfo("com.spookyhousestudios.progressbar95", 0)
             apkInfoB = pm.getPackageInfo("com.spookyhousestudios.progressbar95", 0)
@@ -89,6 +92,15 @@ class MainActivity : AppCompatActivity() {
                     })
                     dpiList.text = dpiList.text.toString() + dpiFound
                 }
+                if (!
+                    apkName.endsWith("armeabi_v7a") &&!
+                    apkName.endsWith("arm64_v8a")   &&!
+                    apkName.endsWith("x86")         &&!
+                    apkName.endsWith("x86_64")      &&!
+                    apkName.endsWith("dpi")         &&
+                    apkName != "base"
+                ) langList.text = langList.text.toString() + apkName + "\n"
+
             }
 
             archiveButton.setOnClickListener {
@@ -102,12 +114,21 @@ class MainActivity : AppCompatActivity() {
                 }
                 val dpis = apks.filter { f: File -> f.nameWithoutExtension.endsWith("dpi")}
                 val base = apks.filter { f: File -> f.name.equals("base.apk") }
+                val langs = apks.filter { f: File ->
+                    !f.nameWithoutExtension.endsWith("armeabi_v7a") &&!
+                    f.nameWithoutExtension.endsWith("arm64_v8a")   &&!
+                    f.nameWithoutExtension.endsWith("x86")         &&!
+                    f.nameWithoutExtension.endsWith("x86_64")      &&!
+                    f.nameWithoutExtension.endsWith("dpi")         &&
+                            f.nameWithoutExtension != "base"
+                }
                 Log.d("ProgressArchiver95", "ABIs: $abis")
                 Log.d("ProgressArchiver95", "DPIs: $dpis")
                 Log.d("ProgressArchiver95", "Base: $base")
                 var chosenApks: Sequence<File> = abis
                 if (copyDpis) chosenApks += dpis
                 if (copyBase) chosenApks += base
+                if (copyLang) chosenApks += langs
                 chosenApks.forEach { a ->
                     Log.d("ProgressArchiver95", "Found APK: " + a.absolutePath.toString())
                     val archiveVerDir = File(archiveDir, apkVer)
@@ -149,7 +170,20 @@ class MainActivity : AppCompatActivity() {
     }
     private fun oldArchive(context: Context): Boolean {
         Toast.makeText(context,getString(R.string.old_archive_mode_started),Toast.LENGTH_SHORT).show()
-
+        val archiveDir = File(getExternalFilesDir(null), "archive")
+        val apkInfo: ApplicationInfo = pm.getApplicationInfo("com.spookyhousestudios.progressbar95", 0)
+        val apkInfoB: PackageInfo = pm.getPackageInfo("com.spookyhousestudios.progressbar95", 0)
+        val apkPath: String = apkInfo.publicSourceDir.removeSuffix("base.apk")
+        val apkVer: String = apkInfoB.versionName
+        val apkPathHandle = File(apkPath,"")
+        val base = apkPathHandle.walk().maxDepth(1).filter { f: File -> f.name == "base.apk"}.first()
+        val archiveVerDir = File(archiveDir, apkVer)
+        archiveVerDir.mkdir()
+        val target = File(archiveVerDir, base.name)
+        target.createNewFile()
+        base.copyTo(target, true)
+        Log.d("ProgressArchiver95", "Archived ${base.name} successfully")
+        Toast.makeText(context, "Archived $apkVer successfully", Toast.LENGTH_SHORT).show()
         return true
     }
 

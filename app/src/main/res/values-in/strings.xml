@@ -14,5 +14,5 @@
     <string name="copy_base">Salin base.apk</string>
     <string name="pb95_not_found">Progressbar95 tidak ditemukan...</string>
     <string name="copy_lang">Salin bahasa</string>
-    <string name="langs_found">Bahasa:</string>
+    <string name="langs_found">Bahasa:\n</string>
 </resources>
