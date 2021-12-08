@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -54,12 +55,17 @@ class MainActivity : AppCompatActivity() {
             apkInfoB = pm.getPackageInfo("com.spookyhousestudios.progressbar95", 0)
             apkPath = apkInfo.publicSourceDir.removeSuffix("base.apk")
             apkVer = apkInfoB.versionName
+            val apkBuild = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                apkInfoB.longVersionCode
+            } else {
+                apkInfoB.versionCode
+            }
             apkPathHandle = File(apkPath,"")
             statusLabel.text = getString(R.string.files_found_at)
             statusLabel.setOnClickListener { view ->
                 Snackbar.make(view, apkPath, Snackbar.LENGTH_LONG).setAction("", null).show()
             }
-            versionLabel.text = getString(R.string.version_label) + apkVer
+            versionLabel.text = getString(R.string.version_label) + apkVer + "\nBuild $apkBuild"
 
             val apks: Sequence<File> = apkPathHandle.walk().maxDepth(1).filter { f: File ->
                 f.absolutePath.endsWith(".apk")
