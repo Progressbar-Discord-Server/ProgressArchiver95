@@ -2,6 +2,7 @@ package com.luihum.progressarchiver95
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -171,6 +172,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_old_archive -> oldArchive(context)
             R.id.action_about -> about(context)
+            R.id.action_settings -> settings(context)
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -199,6 +201,12 @@ class MainActivity : AppCompatActivity() {
             .setMessage(R.string.about_content)
             .setNeutralButton(R.string.ok, null)
             .show()
+        return true
+    }
+
+    private fun settings(context: Context): Boolean {
+        val intent = Intent(context, SettingsActivity::class.java)
+        startActivity(intent)
         return true
     }
 }

@@ -2,12 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.luihum.progressarchiver95">
-    <queries>
-        <package android:name="com.spookyhousestudios.progressbar95"/>
-    </queries>
+
     <uses-sdk
         android:targetSdkVersion="30"
         tools:ignore="GradleOverrides" />
+
+    <queries>
+        <package android:name="com.spookyhousestudios.progressbar95" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -16,7 +19,12 @@
         android:supportsRtl="true"
         android:testOnly="false"
         android:theme="@style/Theme.ProgressArchiver95">
-       <!-- <provider
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_settings" />
+        <!--
+         <provider
             android:name="com.luihum.progressarchiver95.ArchiveProvider"
             android:authorities="com.luihum.progressarchiver95.ArchiveProvider.pb95archive"
             android:permission="android.permission.MANAGE_DOCUMENTS"
@@ -25,7 +33,8 @@
             <intent-filter>
                 <action android:name="android.content.action.DOCUMENTS_PROVIDER"/>
             </intent-filter>
-        </provider>-->
+        </provider>
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

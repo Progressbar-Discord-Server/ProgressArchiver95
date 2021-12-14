@@ -15,4 +15,6 @@
     <string name="pb95_not_found">Progressbar95 tidak ditemukan...</string>
     <string name="copy_lang">Salin bahasa</string>
     <string name="langs_found">Bahasa:\n</string>
+    <string name="dark_mode">Mode gelap</string>
+    <string name="title_settings">Pengaturan</string>
 </resources>
