@@ -23,7 +23,6 @@
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_settings" />
-        <!--
          <provider
             android:name="com.luihum.progressarchiver95.ArchiveProvider"
             android:authorities="com.luihum.progressarchiver95.ArchiveProvider.pb95archive"
@@ -34,7 +33,6 @@
                 <action android:name="android.content.action.DOCUMENTS_PROVIDER"/>
             </intent-filter>
         </provider>
-        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

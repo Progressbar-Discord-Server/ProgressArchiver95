@@ -142,20 +142,19 @@ class ArchiveProvider : DocumentsProvider() {
         }
         var flags = 0
         if (file.isDirectory) {
-            flags = flags or FLAG_SUPPORTS_DELETE
-            val displayName = file.name
-            val mimeType = getMimeType(file)
-            if (mimeType.startsWith("image/")) flags =
-                flags or DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL
-            val row = result.newRow()
-            row.add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docId)
-            row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, displayName)
-            row.add(DocumentsContract.Document.COLUMN_SIZE, file.length())
-            row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, mimeType)
-            row.add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, file.lastModified())
-            row.add(DocumentsContract.Document.COLUMN_FLAGS, flags)
-            row.add(DocumentsContract.Document.COLUMN_ICON, R.drawable.ic_launcher)
-        }
+            flags = flags or FLAG_SUPPORTS_DELETE }
+        val displayName = file.name
+        val mimeType = getMimeType(file)
+        if (mimeType.startsWith("image/")) flags =
+            flags or DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL
+        val row = result.newRow()
+        row.add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docId)
+        row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, displayName)
+        row.add(DocumentsContract.Document.COLUMN_SIZE, file.length())
+        row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, mimeType)
+        row.add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, file.lastModified())
+        row.add(DocumentsContract.Document.COLUMN_FLAGS, flags)
+        row.add(DocumentsContract.Document.COLUMN_ICON, R.drawable.ic_launcher)
         Log.d("ProgressArchiver95", "ArchiveProvider: Included ${file.absolutePath}")
 
     }

@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         context = this
         context.packageManager.also { pm = it }
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val archiveDir = File(getExternalFilesDir(null)/*filesDir*/, "archive")
+        val archiveDir = File(/*getExternalFilesDir(null)*/filesDir, "archive")
         val statusLabel = binding.statusText
         val versionLabel = binding.versionLabel
         val archiveButton = binding.archiveButton
