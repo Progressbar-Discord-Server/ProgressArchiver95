@@ -71,6 +71,18 @@
             app:layout_constraintStart_toStartOf="@+id/copybase"
             app:layout_constraintTop_toBottomOf="@+id/copybase" />
 
+        <CheckBox
+            android:id="@+id/generateXapk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/make_xapk"
+            app:layout_constraintBottom_toTopOf="@+id/archive_button"
+            app:layout_constraintEnd_toEndOf="@+id/copylang"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/copylang"
+            app:layout_constraintTop_toBottomOf="@+id/copylang"
+            app:layout_constraintVertical_bias="0.583" />
+
         <TextView
             android:id="@+id/version_label"
             android:layout_width="wrap_content"

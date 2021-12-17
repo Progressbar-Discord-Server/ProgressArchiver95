@@ -141,7 +141,7 @@ class ArchiveProvider : DocumentsProvider() {
             file = getFileForDocId(docId)
         }
         var flags = 0
-        if (file.isDirectory) {
+        if (file.isDirectory || file.extension == ".xapk") {
             flags = flags or FLAG_SUPPORTS_DELETE }
         val displayName = file.name
         val mimeType = getMimeType(file)

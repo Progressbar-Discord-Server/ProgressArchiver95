@@ -18,6 +18,7 @@ import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.luihum.progressarchiver95.databinding.ActivityMainBinding
 import java.io.File
+import com.luihum.progressarchiver95.Util
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -45,12 +46,14 @@ class MainActivity : AppCompatActivity() {
         var copyBase = binding.copybase.isChecked
         var copyDpis = binding.copydpis.isChecked
         var copyLang = binding.copylang.isChecked
+        var makeXapk = binding.generateXapk.isChecked
         archiveDir.mkdir()
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         binding.copydpis.setOnClickListener { copyDpis = binding.copydpis.isChecked }
         binding.copybase.setOnClickListener { copyBase = binding.copybase.isChecked }
         binding.copylang.setOnClickListener { copyLang = binding.copylang.isChecked }
+        binding.generateXapk.setOnClickListener { makeXapk = binding.generateXapk.isChecked }
         try {
             apkInfo = pm.getApplicationInfo("com.spookyhousestudios.progressbar95", 0)
             apkInfoB = pm.getPackageInfo("com.spookyhousestudios.progressbar95", 0)
@@ -115,18 +118,18 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(context, "Started to archive $apkVer", Toast.LENGTH_SHORT).show()
                 val abis = apks.filter { f: File ->
                     f.nameWithoutExtension.endsWith("armeabi_v7a") ||
-                    f.nameWithoutExtension.endsWith("arm64_v8a")   ||
-                    f.nameWithoutExtension.endsWith("x86")         ||
-                    f.nameWithoutExtension.endsWith("x86_64")
+                            f.nameWithoutExtension.endsWith("arm64_v8a") ||
+                            f.nameWithoutExtension.endsWith("x86") ||
+                            f.nameWithoutExtension.endsWith("x86_64")
                 }
-                val dpis = apks.filter { f: File -> f.nameWithoutExtension.endsWith("dpi")}
+                val dpis = apks.filter { f: File -> f.nameWithoutExtension.endsWith("dpi") }
                 val base = apks.filter { f: File -> f.name.equals("base.apk") }
                 val langs = apks.filter { f: File ->
-                    !f.nameWithoutExtension.endsWith("armeabi_v7a") &&!
-                    f.nameWithoutExtension.endsWith("arm64_v8a")   &&!
-                    f.nameWithoutExtension.endsWith("x86")         &&!
-                    f.nameWithoutExtension.endsWith("x86_64")      &&!
-                    f.nameWithoutExtension.endsWith("dpi")         &&
+                    !f.nameWithoutExtension.endsWith("armeabi_v7a") && !
+                    f.nameWithoutExtension.endsWith("arm64_v8a") && !
+                    f.nameWithoutExtension.endsWith("x86") && !
+                    f.nameWithoutExtension.endsWith("x86_64") && !
+                    f.nameWithoutExtension.endsWith("dpi") &&
                             f.nameWithoutExtension != "base"
                 }
                 Log.d("ProgressArchiver95", "ABIs: $abis")
@@ -136,17 +139,28 @@ class MainActivity : AppCompatActivity() {
                 if (copyDpis) chosenApks += dpis
                 if (copyBase) chosenApks += base
                 if (copyLang) chosenApks += langs
-                chosenApks.forEach { a ->
-                    Log.d("ProgressArchiver95", "Found APK: " + a.absolutePath.toString())
-                    val archiveVerDir = File(archiveDir, apkVer)
-                    archiveVerDir.mkdir()
-                    val target = File(archiveVerDir, a.name)
-                    target.createNewFile()
+                if (!makeXapk) {
+                    chosenApks.forEach { a ->
+                        Log.d("ProgressArchiver95", "Found APK: " + a.absolutePath.toString())
+                        val archiveVerDir = File(archiveDir, apkVer)
+                        archiveVerDir.mkdir()
+                        val target = File(archiveVerDir, a.name)
+                        target.createNewFile()
 
-                    a.copyTo(target, true)
-                    Log.d("ProgressArchiver95", "Archived ${a.name} successfully")
+                        a.copyTo(target, true)
+                        Log.d("ProgressArchiver95", "Archived ${a.name} successfully")
+                    }
+                    Toast.makeText(context, "Archived $apkVer successfully", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    val archiveVerPath = archiveDir.absolutePath + "/" + apkVer + ".xapk"
+                    //var size = 0
+                //  chosenApks.forEach { size++ }
+                    var chosenApksArray = chosenApks.map {
+                        it.absolutePath
+                    }.toList().toTypedArray()
+                    Util().zipFile(chosenApksArray,archiveVerPath)
                 }
-                Toast.makeText(context, "Archived $apkVer successfully", Toast.LENGTH_SHORT).show()
             }
 
         } catch (e: PackageManager.NameNotFoundException) {
@@ -172,7 +186,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_old_archive -> oldArchive(context)
             R.id.action_about -> about(context)
-            R.id.action_settings -> settings(context)
+           // R.id.action_settings -> settings(context)
             else -> super.onOptionsItemSelected(item)
         }
     }
