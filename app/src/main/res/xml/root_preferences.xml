@@ -3,6 +3,10 @@
     <SwitchPreferenceCompat
         app:key="dark_mode"
         app:title="@string/dark_mode" />
+    <SwitchPreferenceCompat
+        app:key="legacy_storage"
+        app:title="@string/legacy_storage"
+        app:useSimpleSummaryProvider="true" />
   <!--  <EditTextPreference
     <PreferenceCategory app:title="@string/messages_header">
 
