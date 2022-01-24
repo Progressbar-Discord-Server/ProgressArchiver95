@@ -18,4 +18,5 @@
     <string name="dark_mode">Modo escuro</string>
     <string name="title_settings">Configurações</string>
     <string name="make_xapk">Gerar XAPK</string>
+    <string name="legacy_storage">Armazenamento antigo</string>
 </resources>

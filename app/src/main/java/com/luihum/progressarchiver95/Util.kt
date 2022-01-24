@@ -19,5 +19,8 @@ class Util {
         }
         out.close()
     }
+    fun moveDataToExternalStorage() {
+
+    }
 
 }

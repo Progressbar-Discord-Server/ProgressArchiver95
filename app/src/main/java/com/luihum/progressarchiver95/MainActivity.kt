@@ -3,6 +3,7 @@ package com.luihum.progressarchiver95
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -15,6 +16,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.luihum.progressarchiver95.databinding.ActivityMainBinding
 import java.io.File
@@ -31,7 +33,10 @@ class MainActivity : AppCompatActivity() {
         context = this
         context.packageManager.also { pm = it }
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val archiveDir = File(/*getExternalFilesDir(null)*/filesDir, "archive")
+        val preferences :SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        var archiveLocation = if ((preferences.getBoolean("legacy_storage", false))) {
+        getExternalFilesDir("")} else { filesDir }
+        val archiveDir = File(archiveLocation, "archive")
         val statusLabel = binding.statusText
         val versionLabel = binding.versionLabel
         val archiveButton = binding.archiveButton
@@ -116,42 +121,12 @@ class MainActivity : AppCompatActivity() {
             archiveButton.setOnClickListener {
                 //BUG: This doesn't show for some reason
                 Toast.makeText(context, "Started to archive $apkVer", Toast.LENGTH_SHORT).show()
-                val abis = apks.filter { f: File ->
-                    f.nameWithoutExtension.endsWith("armeabi_v7a") ||
-                            f.nameWithoutExtension.endsWith("arm64_v8a") ||
-                            f.nameWithoutExtension.endsWith("x86") ||
-                            f.nameWithoutExtension.endsWith("x86_64")
-                }
-                val dpis = apks.filter { f: File -> f.nameWithoutExtension.endsWith("dpi") }
-                val base = apks.filter { f: File -> f.name.equals("base.apk") }
-                val langs = apks.filter { f: File ->
-                    !f.nameWithoutExtension.endsWith("armeabi_v7a") && !
-                    f.nameWithoutExtension.endsWith("arm64_v8a") && !
-                    f.nameWithoutExtension.endsWith("x86") && !
-                    f.nameWithoutExtension.endsWith("x86_64") && !
-                    f.nameWithoutExtension.endsWith("dpi") &&
-                            f.nameWithoutExtension != "base"
-                }
-                Log.d("ProgressArchiver95", "ABIs: $abis")
-                Log.d("ProgressArchiver95", "DPIs: $dpis")
-                Log.d("ProgressArchiver95", "Base: $base")
-                var chosenApks: Sequence<File> = abis
-                if (copyDpis) chosenApks += dpis
-                if (copyBase) chosenApks += base
-                if (copyLang) chosenApks += langs
+                val chosenApks = parseApks(apks, true, copyBase, copyDpis, copyLang)
                 if (!makeXapk) {
-                    chosenApks.forEach { a ->
-                        Log.d("ProgressArchiver95", "Found APK: " + a.absolutePath.toString())
-                        val archiveVerDir = File(archiveDir, apkVer)
-                        archiveVerDir.mkdir()
-                        val target = File(archiveVerDir, a.name)
-                        target.createNewFile()
-
-                        a.copyTo(target, true)
-                        Log.d("ProgressArchiver95", "Archived ${a.name} successfully")
-                    }
-                    Toast.makeText(context, "Archived $apkVer successfully", Toast.LENGTH_SHORT)
-                        .show()
+                    val archiveVerDir = File(archiveDir, apkVer)
+                    archive(chosenApks, archiveVerDir)
+                   Toast.makeText(context, "Archived $apkVer successfully", Toast.LENGTH_SHORT)
+                       .show()
                 } else {
                     val archiveVerPath = archiveDir.absolutePath + "/" + apkVer + ".xapk"
                     //var size = 0
@@ -186,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_old_archive -> oldArchive(context)
             R.id.action_about -> about(context)
-           // R.id.action_settings -> settings(context)
+            R.id.action_settings -> settings(context)
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -222,5 +197,52 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(context, SettingsActivity::class.java)
         startActivity(intent)
         return true
+    }
+
+    private fun archive(chosenApks: Sequence<File>, archiveVerDir: File) {
+        chosenApks.forEach { a ->
+            Log.d("ProgressArchiver95", "Found APK: " + a.absolutePath.toString())
+            archiveVerDir.mkdir()
+            val target = File(archiveVerDir, a.name)
+            target.createNewFile()
+
+            a.copyTo(target, true)
+            Log.d("ProgressArchiver95", "Archived ${a.name} successfully in $archiveVerDir")
+        }
+    }
+
+    private fun parseApks(
+        apks: Sequence<File>,
+        copyAbis: Boolean,
+        copyBase: Boolean,
+        copyDpis: Boolean,
+        copyLang: Boolean,
+    ): Sequence<File> {
+        val abis = apks.filter { f: File ->
+            f.nameWithoutExtension.endsWith("armeabi_v7a") ||
+                    f.nameWithoutExtension.endsWith("arm64_v8a") ||
+                    f.nameWithoutExtension.endsWith("x86") ||
+                    f.nameWithoutExtension.endsWith("x86_64")
+        }
+        val dpis = apks.filter { f: File -> f.nameWithoutExtension.endsWith("dpi") }
+        val base = apks.filter { f: File -> f.name.equals("base.apk") }
+        val langs = apks.filter { f: File ->
+            !f.nameWithoutExtension.endsWith("armeabi_v7a") && !
+            f.nameWithoutExtension.endsWith("arm64_v8a") && !
+            f.nameWithoutExtension.endsWith("x86") && !
+            f.nameWithoutExtension.endsWith("x86_64") && !
+            f.nameWithoutExtension.endsWith("dpi") &&
+            f.nameWithoutExtension != "base"
+        }
+        Log.d("ProgressArchiver95", "ABIs: $abis")
+        Log.d("ProgressArchiver95", "DPIs: $dpis")
+        Log.d("ProgressArchiver95", "Base: $base")
+        Log.d("ProgressArchiver95", "Lang: $langs")
+        var chosenApks: Sequence<File> = emptySequence()
+        if (copyAbis) chosenApks += abis
+        if (copyDpis) chosenApks += dpis
+        if (copyBase) chosenApks += base
+        if (copyLang) chosenApks += langs
+        return chosenApks
     }
 }

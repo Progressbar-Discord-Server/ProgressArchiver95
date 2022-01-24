@@ -17,5 +17,6 @@
     <string name="langs_found">Bahasa:\n</string>
     <string name="dark_mode">Mode gelap</string>
     <string name="title_settings">Pengaturan</string>
-    <string name="make_xapk">(PLACEHOLDER)</string>
+    <string name="make_xapk">makeXapk</string>
+    <string name="legacy_storage">legacyStorage</string>
 </resources>

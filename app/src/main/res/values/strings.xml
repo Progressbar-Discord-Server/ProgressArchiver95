@@ -33,5 +33,6 @@
     <string name="dark_mode">Dark mode</string>
     <string name="title_settings">Settings</string>
     <string name="make_xapk">Generate XAPK</string>
+    <string name="legacy_storage">Legacy storage</string>
 
 </resources>

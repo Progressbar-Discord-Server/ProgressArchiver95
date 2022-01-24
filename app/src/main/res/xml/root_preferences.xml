@@ -1,8 +1,8 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreferenceCompat
+    <!--<SwitchPreferenceCompat
         app:key="dark_mode"
-        app:title="@string/dark_mode" />
+        app:title="@string/dark_mode" />-->
     <SwitchPreferenceCompat
         app:key="legacy_storage"
         app:title="@string/legacy_storage"
