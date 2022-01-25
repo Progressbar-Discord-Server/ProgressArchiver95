@@ -4,6 +4,7 @@ package com.luihum.progressarchiver95
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import java.io.File
@@ -21,8 +22,6 @@ class SettingsActivity : AppCompatActivity() {
                 .commit()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        Toast.makeText(this, "Restart to apply changes", Toast.LENGTH_LONG).show()
-
     }
 
 
@@ -42,7 +41,16 @@ class SettingsActivity : AppCompatActivity() {
                 Toast.makeText(context, "Restart the app", Toast.LENGTH_LONG).show()
                 true
             }
+            findPreference<SwitchPreferenceCompat>("dark_mode")?.setOnPreferenceChangeListener { _, newValue ->
+                if (newValue == true) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+                true
+            }
         }
     }
 }
+
 

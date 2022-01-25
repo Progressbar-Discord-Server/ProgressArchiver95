@@ -1,42 +1,11 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<SwitchPreferenceCompat
+   <SwitchPreferenceCompat
         app:key="dark_mode"
-        app:title="@string/dark_mode" />-->
+        app:title="@string/dark_mode" />
     <SwitchPreferenceCompat
         app:key="legacy_storage"
         app:title="@string/legacy_storage"
         app:useSimpleSummaryProvider="true" />
-  <!--  <EditTextPreference
-    <PreferenceCategory app:title="@string/messages_header">
 
-        <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
-
-    </PreferenceCategory>
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
-    </PreferenceCategory>
--->
 </PreferenceScreen>
