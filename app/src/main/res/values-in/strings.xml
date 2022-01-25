@@ -19,4 +19,6 @@
     <string name="title_settings">Pengaturan</string>
     <string name="make_xapk">makeXapk</string>
     <string name="legacy_storage">legacyStorage</string>
+    <string name="archive_popupfighter">archivePopupFighter</string>
+    <string name="pbpopupfighter_started">archivingPopupFighter</string>
 </resources>

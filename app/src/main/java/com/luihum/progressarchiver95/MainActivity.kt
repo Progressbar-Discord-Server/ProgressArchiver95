@@ -25,24 +25,19 @@ import com.luihum.progressarchiver95.Util
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var pm : PackageManager
-    private lateinit var context : Context
+    private var context : Context = this
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context = this
         context.packageManager.also { pm = it }
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         val preferences :SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        var archiveLocation = if ((preferences.getBoolean("legacy_storage", false))) {
-        getExternalFilesDir("")} else { filesDir }
+        val archiveLocation = if ((preferences.getBoolean("legacy_storage", false))) {
+            getExternalFilesDir("")} else { filesDir }
         val archiveDir = File(archiveLocation, "archive")
-        val statusLabel = binding.statusText
-        val versionLabel = binding.versionLabel
-        val archiveButton = binding.archiveButton
-        val abiList = binding.foundAbiList
-        val dpiList = binding.foundDpiList
-        val langList = binding.foundLangList
         val apkInfo: ApplicationInfo
         val apkInfoB: PackageInfo
         val apkPath: String
@@ -52,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         var copyDpis = binding.copydpis.isChecked
         var copyLang = binding.copylang.isChecked
         var makeXapk = binding.generateXapk.isChecked
+
         archiveDir.mkdir()
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
@@ -70,55 +66,18 @@ class MainActivity : AppCompatActivity() {
                 apkInfoB.versionCode
             }
             apkPathHandle = File(apkPath,"")
-            statusLabel.text = getString(R.string.files_found_at)
-            statusLabel.setOnClickListener { view ->
+            binding.statusText.text = getString(R.string.files_found_at)
+            binding.statusText.setOnClickListener { view ->
                 Snackbar.make(view, apkPath, Snackbar.LENGTH_LONG).setAction("", null).show()
             }
-            versionLabel.text = getString(R.string.version_label) + apkVer + "\nBuild $apkBuild"
+            binding.versionLabel.text = getString(R.string.version_label) + apkVer + "\nBuild $apkBuild"
 
             val apks: Sequence<File> = apkPathHandle.walk().maxDepth(1).filter { f: File ->
                 f.absolutePath.endsWith(".apk")
             }
-            apks.forEach { a ->
-                val apkName = a.nameWithoutExtension.removePrefix("split_config.")
-                if (apkName == "armeabi_v7a" || apkName == "arm64_v8a" || apkName == "x86_64" || apkName == "x86" ) {
-                    Log.d("ProgressArchiver95", "ABI found: $apkName")
-                    val abiFound: String = (when (apkName) {
-                        "armeabi_v7a" -> getString(R.string.armeabi_v7a)
-                        "arm64_v8a" -> getString(R.string.arm64_v8a)
-                        "x86" -> getString(R.string.x86)
-                        "x86_64" -> getString(R.string.x86_64)
-                        else -> getString(R.string.unknown)
-                    })
-                    abiList.text = abiList.text.toString() + abiFound
-                }
-                if (apkName.endsWith("dpi")) {
-                    Log.d("ProgressArchiver95", "DPI found: $apkName")
-                    val dpiFound: String = (when (apkName) {
-                        "nodpi" -> getString(R.string.nodpi)
-                        "tvdpi" -> getString(R.string.tvdpi)
-                        "ldpi" -> getString(R.string.ldpi)
-                        "mdpi" -> getString(R.string.mdpi)
-                        "hdpi" -> getString(R.string.hdpi)
-                        "xhdpi" -> getString(R.string.xhdpi)
-                        "xxhdpi" -> getString(R.string.xxhdpi)
-                        "xxxhdpi" -> getString(R.string.xxxhdpi)
-                        else -> getString(R.string.unknown)
-                    })
-                    dpiList.text = dpiList.text.toString() + dpiFound
-                }
-                if (!
-                    apkName.endsWith("armeabi_v7a") &&!
-                    apkName.endsWith("arm64_v8a")   &&!
-                    apkName.endsWith("x86")         &&!
-                    apkName.endsWith("x86_64")      &&!
-                    apkName.endsWith("dpi")         &&
-                    apkName != "base"
-                ) langList.text = langList.text.toString() + apkName + "\n"
+            updateApkList(apks, binding)
 
-            }
-
-            archiveButton.setOnClickListener {
+            binding.archiveButton.setOnClickListener {
                 //BUG: This doesn't show for some reason
                 Toast.makeText(context, "Started to archive $apkVer", Toast.LENGTH_SHORT).show()
                 val chosenApks = parseApks(apks, true, copyBase, copyDpis, copyLang)
@@ -139,12 +98,15 @@ class MainActivity : AppCompatActivity() {
             }
 
         } catch (e: PackageManager.NameNotFoundException) {
-            statusLabel.text = getString(R.string.pb95_not_found)
-            archiveButton.isVisible = false
+            binding.statusText.text = getString(R.string.pb95_not_found)
+            binding.archiveButton.isVisible = false
             binding.copydpis.isVisible = false
             binding.copybase.isVisible = false
-            abiList.isVisible = false
-            dpiList.isVisible = false
+            binding.generateXapk.isVisible = false
+            binding.foundLangList.isVisible = false
+            binding.foundAbiList.isVisible = false
+            binding.foundDpiList.isVisible = false
+
         }
     }
 
@@ -162,9 +124,84 @@ class MainActivity : AppCompatActivity() {
             R.id.action_old_archive -> oldArchive(context)
             R.id.action_about -> about(context)
             R.id.action_settings -> settings(context)
+            R.id.action_archive_popupfighter -> archivePopupFighter(context)
             else -> super.onOptionsItemSelected(item)
         }
     }
+    @SuppressLint("SetTextI18n")
+    private fun updateApkList(apks: Sequence<File>, binding: ActivityMainBinding): Boolean {
+        val abiList = binding.foundAbiList
+        val dpiList = binding.foundDpiList
+        val langList = binding.foundLangList
+        apks.forEach { a ->
+            val apkName = a.nameWithoutExtension.removePrefix("split_config.")
+            if (apkName == "armeabi_v7a" || apkName == "arm64_v8a" || apkName == "x86_64" || apkName == "x86" ) {
+                Log.d("ProgressArchiver95", "ABI found: $apkName")
+                val abiFound: String = (when (apkName) {
+                    "armeabi_v7a" -> getString(R.string.armeabi_v7a)
+                    "arm64_v8a" -> getString(R.string.arm64_v8a)
+                    "x86" -> getString(R.string.x86)
+                    "x86_64" -> getString(R.string.x86_64)
+                    else -> getString(R.string.unknown)
+                })
+                abiList.text = abiList.text.toString() + abiFound
+            }
+            if (apkName.endsWith("dpi")) {
+                Log.d("ProgressArchiver95", "DPI found: $apkName")
+                val dpiFound: String = (when (apkName) {
+                    "nodpi" -> getString(R.string.nodpi)
+                    "tvdpi" -> getString(R.string.tvdpi)
+                    "ldpi" -> getString(R.string.ldpi)
+                    "mdpi" -> getString(R.string.mdpi)
+                    "hdpi" -> getString(R.string.hdpi)
+                    "xhdpi" -> getString(R.string.xhdpi)
+                    "xxhdpi" -> getString(R.string.xxhdpi)
+                    "xxxhdpi" -> getString(R.string.xxxhdpi)
+                    else -> getString(R.string.unknown)
+                })
+                dpiList.text = dpiList.text.toString() + dpiFound
+            }
+            if (!
+                apkName.endsWith("armeabi_v7a") &&!
+                apkName.endsWith("arm64_v8a")   &&!
+                apkName.endsWith("x86")         &&!
+                apkName.endsWith("x86_64")      &&!
+                apkName.endsWith("dpi")         &&
+                apkName != "base"
+            ) langList.text = langList.text.toString() + apkName + "\n"
+        }
+        return true
+    }
+    private fun archivePopupFighter(context: Context): Boolean {
+        val preferences :SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val archiveLocation = if ((preferences.getBoolean("legacy_storage", false))) {
+            getExternalFilesDir("")} else { filesDir }
+        Toast.makeText(context, getString(R.string.old_archive_mode_started), Toast.LENGTH_SHORT)
+            .show()
+        val archiveDir = File(archiveLocation,"archive/PB_Popup_Fighter")
+        archiveDir.mkdir()
+        try {
+            val apkInfo: ApplicationInfo =
+                pm.getApplicationInfo("com.spookyhousestudios.popupfighter", 0)
+            val apkInfoB: PackageInfo = pm.getPackageInfo("com.spookyhousestudios.popupfighter", 0)
+            val apkPath: String = apkInfo.publicSourceDir.removeSuffix("base.apk")
+            val apkVer: String = apkInfoB.versionName
+            val apkPathHandle = File(apkPath, "")
+            val archiveVerDir = File(archiveDir, apkVer)
+            val base =
+                apkPathHandle.walk().maxDepth(1).filter { f: File -> f.name == "base.apk" }.first()
+            archiveVerDir.mkdir()
+            val target = File(archiveVerDir, base.name)
+            target.createNewFile()
+            base.copyTo(target, true)
+            Log.d("ProgressArchiver95", "Archived ${base.name} successfully")
+            Toast.makeText(context,
+                "Archived Popup Fighter $apkVer successfully",
+                Toast.LENGTH_SHORT).show()
+            return true
+        } catch(e: PackageManager.NameNotFoundException) { return false }
+    }
+
     private fun oldArchive(context: Context): Boolean {
         Toast.makeText(context,getString(R.string.old_archive_mode_started),Toast.LENGTH_SHORT).show()
         val archiveDir = File(getExternalFilesDir(null), "archive")

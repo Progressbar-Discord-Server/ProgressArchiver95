@@ -19,4 +19,6 @@
     <string name="title_settings">Configurações</string>
     <string name="make_xapk">Gerar XAPK</string>
     <string name="legacy_storage">Armazenamento antigo</string>
+    <string name="archive_popupfighter">-</string>
+    <string name="pbpopupfighter_started">-</string>
 </resources>

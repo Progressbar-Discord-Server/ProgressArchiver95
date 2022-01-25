@@ -1,6 +1,8 @@
 package com.luihum.progressarchiver95
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -19,8 +21,14 @@ class Util {
         }
         out.close()
     }
-    fun moveDataToExternalStorage() {
-
+    fun moveDataToExternalStorage(newValue: Any, context: Context) {
+        if (newValue == true) {
+            File(context!!.filesDir,"").walk().first().copyRecursively(context.getExternalFilesDir("")!!,true)
+            File(context.filesDir,"").walk().first().deleteRecursively()
+        } else {
+            File(context!!.getExternalFilesDir(""),"").walk().first().copyRecursively(context.filesDir!!,true)
+            File(context.getExternalFilesDir(""),"").walk().first().deleteRecursively()                }
+        Toast.makeText(context, "Restart the app", Toast.LENGTH_LONG).show()
     }
 
 }
