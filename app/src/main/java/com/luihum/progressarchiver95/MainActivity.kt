@@ -20,7 +20,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.luihum.progressarchiver95.databinding.ActivityMainBinding
 import java.io.File
-import com.luihum.progressarchiver95.Util
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     val archiveVerPath = archiveDir.absolutePath + "/" + apkVer + ".xapk"
                     //var size = 0
                 //  chosenApks.forEach { size++ }
-                    var chosenApksArray = chosenApks.map {
+                    val chosenApksArray = chosenApks.map {
                         it.absolutePath
                     }.toList().toTypedArray()
                     Util().zipFile(chosenApksArray,archiveVerPath)
