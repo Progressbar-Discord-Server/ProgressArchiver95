@@ -10,11 +10,11 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         binding.copybase.setOnClickListener { copyBase = binding.copybase.isChecked }
         binding.copylang.setOnClickListener { copyLang = binding.copylang.isChecked }
         binding.generateXapk.setOnClickListener { makeXapk = binding.generateXapk.isChecked }
+
         try {
             apkInfo = pm.getApplicationInfo("com.spookyhousestudios.progressbar95", 0)
             apkInfoB = pm.getPackageInfo("com.spookyhousestudios.progressbar95", 0)
@@ -178,27 +179,26 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(context, getString(R.string.old_archive_mode_started), Toast.LENGTH_SHORT)
             .show()
         val archiveDir = File(archiveLocation,"archive/PB_Popup_Fighter")
+
         archiveDir.mkdir()
-        try {
+        return try {
             val apkInfo: ApplicationInfo =
                 pm.getApplicationInfo("com.spookyhousestudios.popupfighter", 0)
+            val apkPathHandle = File(apkInfo.publicSourceDir.removeSuffix("base.apk"), "")
             val apkInfoB: PackageInfo = pm.getPackageInfo("com.spookyhousestudios.popupfighter", 0)
-            val apkPath: String = apkInfo.publicSourceDir.removeSuffix("base.apk")
             val apkVer: String = apkInfoB.versionName
-            val apkPathHandle = File(apkPath, "")
             val archiveVerDir = File(archiveDir, apkVer)
-            val base =
-                apkPathHandle.walk().maxDepth(1).filter { f: File -> f.name == "base.apk" }.first()
-            archiveVerDir.mkdir()
-            val target = File(archiveVerDir, base.name)
-            target.createNewFile()
-            base.copyTo(target, true)
-            Log.d("ProgressArchiver95", "Archived ${base.name} successfully")
+            val apks: Sequence<File> = apkPathHandle.walk().maxDepth(1).filter { f: File ->
+                f.absolutePath.endsWith(".apk")
+            }
+            archive(apks, archiveVerDir)
             Toast.makeText(context,
                 "Archived Popup Fighter $apkVer successfully",
                 Toast.LENGTH_SHORT).show()
-            return true
-        } catch(e: PackageManager.NameNotFoundException) { return false }
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
     }
 
     private fun oldArchive(context: Context): Boolean {
